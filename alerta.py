@@ -1,0 +1,2 @@
+class alerta:
+    pass
