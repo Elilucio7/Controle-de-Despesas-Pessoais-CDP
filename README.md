@@ -1,7 +1,7 @@
 # Controle-de-Despesas-Pessoais-CDP
 Projeto para a cadeira de P.O.O. no segundo semestre de engenharia de software
 
-Ele tem como objetivo de construir um sistema de linha de comando (CLI) ou API mínima (FastAPI/Flask) para gerenciar receitas, despesas e orçamentos pessoais, com armazenamento persistente em JSON ou SQLite com foco em aplicar encapsulamento, herança, métodos especiais, validações rigorosas e relações entre múltiplas classes.
+Ele tem como objetivo de construir um sistema de linha de comando (CLI) para gerenciar receitas, despesas e orçamentos pessoais, com armazenamento persistente em JSON ou SQLite com foco em aplicar encapsulamento, herança, métodos especiais, validações rigorosas e relações entre múltiplas classes.
 
   ESPECIFICAÇÃO PROJETO 1 - POO    
   TEMA 5 – SISTEMA DE CONTROLE DE DESPESAS PESSOAIS    
