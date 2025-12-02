@@ -1,6 +1,10 @@
+import modules.bancodados as bancodados
+
+banco = bancodados.BancoDados()
 class cad_categ:
+    limite_usado = 10
     se_cadastrando = False
-    lista_categorias = {"q": 2}
+    lista_categorias = banco.listar_categorias() 
     def __init__(self, tipo = None, categoria = None, limite = None, desc = None):
         self.__tipo = tipo
         self.__categoria = categoria
@@ -28,14 +32,36 @@ class cad_categ:
     def desc(self, desc):
         self.__desc = desc
 
+    def listar_e_selecionar(self):
+        categorias_db = banco.listar_categorias()
+        if not categorias_db:
+            print("Não há categorias cadastradas para atualizar.")
+            return None
+        print("\nCategorias disponíveis:")
+        for i, cat in enumerate(categorias_db):
+            print(f"[{i+1}] {cat}")
+        while True:
+            try:
+                escolha = int(input("Digite o número da categoria que deseja atualizar: ")) - 1
+                if 0 <= escolha < len(categorias_db):
+                    return categorias_db[escolha]
+                else:
+                    print("Número inválido.")
+            except ValueError:
+                print("Entrada inválida. Digite um número.")
+
     def tentar_valor(self, valor_antes, valor):
         if valor == "1":
             while True:
                 try:
                     valor_antes = float(valor_antes)
-                    break
+                    if valor_antes >= 0:
+                        break
+                    else:
+                        print("Valor inválido. Digite novamente: ")
+                        valor_antes = input()
                 except ValueError:
-                    print("Valor inválido! Digite novamente: ")
+                    print("Valor inválido. Digite novamente: ")
                     valor_antes = input()
             return valor_antes
         elif valor == "2":
@@ -44,37 +70,42 @@ class cad_categ:
                     valor_antes = int(valor_antes)
                     break
                 except ValueError:
-                    print("Valor inválido! Digite novamente: ")
+                    print("Valor inválido. Digite novamente: ")
                     valor_antes = input()
             return valor_antes
     
-    def cad(self):
+    def cad(self, nome_antigo = None):
         print("Digite os dados da categoria\n")
         print("Nome da categoria: ")
-        nome_antes = str(input())
-        if nome_antes in self.lista_categorias: #será alterado quando o banco de dados for implementado
-            if self.se_cadastrando:
-                return print("Categoria já cadastrada!")
+        while True:
+            self.__categoria = str(input())
+            if self.__categoria in self.lista_categorias and self.se_cadastrando:
+                return print("Categoria já cadastrada.")
+            elif self.__categoria in self.lista_categorias and not self.se_cadastrando:
+                print("Categoria com nome existente. Digite novamente: ")
             else:
-                return print("Categoria não pode ser atualizada para um nome já existente!")
-        else:
-            self.__categoria = nome_antes
+                break
         print("\n", "Tipo da categoria (despesa = 1 ou receita = 2): ")
-        tipo_antes = self.tentar_valor(input(), "2")
-        while tipo_antes != 1 and tipo_antes != 2:
-                tipo_antes = self.tentar_valor(input(), "2")
-                print("Tipo inválido! Digite novamente (despesa = 1 ou receita = 2): ")
-        self.__tipo = tipo_antes
+        self.__tipo = self.tentar_valor(input(), "2")
+        while self.__tipo != 1 and self.__tipo != 2:
+                self.__tipo = self.tentar_valor(input(), "2")
+                print("Tipo inválido. Digite novamente (despesa = 1 ou receita = 2): ")
         self.lista_categorias[self.__categoria] = self.__tipo
         print("\n", "Limite monetário da categoria: ")
-        limite_antes = self.tentar_valor(input(), "1")
-        self._limite = limite_antes
+        self._limite = self.tentar_valor(input(), "1")
+        limite_usado = self._limite
         print("\n", "Descrição da categoria: ")
         self.desc = str(input())
+        self.lista_categorias[self.__categoria] = self.__tipo
         if self.se_cadastrando:
-            print("\n", "Categoria cadastrada com sucesso!")
-        else:
+            print("\n", "Categoria cadastrada com sucesso.")
+            banco.inserir_categoria(self.__tipo, self.__categoria, self._limite, self.__desc)
+        elif nome_antigo:
             print("\n", "Categoria atualizada com sucesso!")
+            banco.atualizar_categoria(nome_antigo=nome_antigo, novo_nome=self.__categoria,novo_tipo=self.__tipo, novo_limite=self._limite, nova_descricao=self.__desc)
+        else:
+            print("\n", "Categoria atualizada com sucesso.")
+            banco.atualizar_categoria(self.__categoria, self.__tipo, self._limite, self.__desc)
 
 
     def cadastrar(self):
@@ -82,24 +113,29 @@ class cad_categ:
         self.cad()
     
     def ver_categ(self):
-        print(f"Categoria: {self.__categoria}\nTipo: {self.__tipo}\nLimite: {self._limite}\nDescrição: {self.__desc}")
+       banco.buscar_dados(self.__categoria)
 
     def update_categ(self):
         self.se_cadastrando = False
-        self.cad()
+        nome_antigo = self.listar_e_selecionar()
+        if nome_antigo:
+            dados_antigos = banco.buscar_categoria(nome_antigo)
+            if dados_antigos:
+                self.__tipo, self.__categoria, self._limite, self.__desc = dados_antigos
+                print(f"\n--- Editando Categoria: {self.__categoria} ({self.__tipo}) ---")
+                self.cad(nome_antigo) 
+        else:
+            print("Nenhuma categoria selecionada.")
+        del self.lista_categorias[self.__categoria]
+        del self.lista_limites[self.__categoria]
 
     def del_categ(self):
         if self.__categoria in self.lista_categorias:
             del self.lista_categorias[self.__categoria]
-            print(f"Categoria {self.__categoria} deletada com sucesso!")
-            del self.__categoria
-            del self.__tipo 
-            del self._limite
-            del self.__desc 
-            
+            print(f"Categoria {self.__categoria} deletada com sucesso.")
+            banco.deletar_categ(self.__categoria)
         else:
-            print("Categoria não encontrada!")
+            print("Categoria não encontrada.")
         
 
 """Essa classe será ultilizada para cadastrar categorias de despesas e receitas, assim como editá-las."""
-
