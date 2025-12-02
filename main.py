@@ -1,25 +1,16 @@
 from modules.cad_categ import cad_categ
+from modules.despesa import despesa
+
 
 #criando objetos
-despesa = cad_categ()
-despesa.cadastrar()
-receita = cad_categ()
-receita.cadastrar()
+despesa = despesa()
+categoria = cad_categ()
 
-#vendo os objetos criados
-despesa.ver_categ()
-receita.ver_categ()
+categoria.cadastrar()
+despesa.cadastrar_recdes()
+despesa.cad_des()
 
-#editando objetos
-despesa.update_categ()
-receita.update_categ()
+despesa.ver_dado()
+categoria.ver_categ()
 
-#"deletando" objetos
-despesa.del_categ()
-receita.del_categ()
-
-#vendo os objetos deletados causa erro
-try:
-    receita.ver_categ()
-except AttributeError:
-    print("Receita deletada com sucesso!")
+categoria.del_categ()
