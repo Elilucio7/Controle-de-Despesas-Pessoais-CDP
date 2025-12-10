@@ -1,7 +1,11 @@
 from modules.cad_recdes import cad_recdes
+import modules.bancodados as bancodados
 import datetime
+
+banco = bancodados.BancoDados()
+
 class despesa(cad_recdes):
-    lista_despesa = {k: v for k, v in cad_recdes.lista_dados.items() if v == 1}
+    lista_despesa = cad_recdes.listar_despesas()
     def __init__(self, nome = None, valor = None, data = None, limite = None):
         super().__init__(nome, tipo = 1, valor = valor, data = data, limite=limite)
 
@@ -17,10 +21,10 @@ class despesa(cad_recdes):
         while True:
             try:
                 self.valor = self.tentar_valor(input(), "1")
-                if self.valor > self.limite:
+                if self.limite is not None and self.valor > self.limite:
                     print("Valor superior ao limite da categoria. Digite um valor novo: ")
-                    self.valor = self.tentar_valor(input(), "1")
-                break
+                else:
+                    break
             except ValueError:
                 print("Valor inválido! Digite novamente: ")
         print("Digite a data da despesa (DD/MM/AAAA): ")
@@ -31,6 +35,8 @@ class despesa(cad_recdes):
                 break
             except ValueError:
                 print("Data inválida! Digite novamente (DD/MM/AAAA): ")
+        data_string = self.data.strftime("%d/%m/%Y")
+        banco.inserir_dado(self.nome, self.valor, self.categoria, data_string)
 
 
 

@@ -59,12 +59,18 @@ class BancoDados:
 
     def buscar_categoria(self, categoria_nome):
         self.c.execute("SELECT tipo, categoria, limite, descricao FROM categorias WHERE categoria = ?", (categoria_nome,))
-        return self.c.fetchone()
+        return print(self.c.fetchone())
+
+    def buscar_limite_categoria(self, categoria_nome):
+        self.c.execute("SELECT limite FROM categorias WHERE categoria = ?", (categoria_nome,))
+        resultado = self.c.fetchone()
+        if resultado:
+            return resultado[0]
+        return None
 
     def buscar_dados(self, categoria):
-        self.c.execute("SELECT * FROM dados WHERE categoria=?", (categoria,))
-        for row in self.c.fetchall():
-            print(row)
+        self.c.execute("SELECT nome, valor, data FROM dados WHERE categoria=?", (categoria,))
+        return self.c.fetchall()
 
     def deletar_categ(self, categoria):
         self.c.execute("DELETE FROM dados WHERE categoria=?", (categoria,))

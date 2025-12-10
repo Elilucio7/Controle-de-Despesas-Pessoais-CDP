@@ -91,9 +91,24 @@ class cad_categ:
                 self.__tipo = self.tentar_valor(input(), "2")
                 print("Tipo inválido. Digite novamente (despesa = 1 ou receita = 2): ")
         self.lista_categorias[self.__categoria] = self.__tipo
-        print("\n", "Limite monetário da categoria: ")
-        self._limite = self.tentar_valor(input(), "1")
-        limite_usado = self._limite
+        if self.__tipo == 1:
+            print("\n", "Limite monetário da categoria: ")
+            while True:
+                limite_input = input()
+                if not limite_input:
+                    self._limite = self.limite_usado
+                    break
+                try:
+                    limite_float = float(limite_input)
+                    if limite_float <= 0:
+                        print("O limite deve ser positivo. Digite novamente: ")
+                    else:
+                        self._limite = limite_float
+                        break
+                except ValueError:
+                    print("Limite inválido. Digite um número: ")
+        else:
+            self.limite = 0.0
         print("\n", "Descrição da categoria: ")
         self.desc = str(input())
         self.lista_categorias[self.__categoria] = self.__tipo
@@ -112,8 +127,8 @@ class cad_categ:
         self.se_cadastrando = True
         self.cad()
     
-    def ver_categ(self):
-       banco.buscar_dados(self.__categoria)
+    def ver_categ(self, x):
+       banco.buscar_categoria(x)
 
     def update_categ(self):
         self.se_cadastrando = False
