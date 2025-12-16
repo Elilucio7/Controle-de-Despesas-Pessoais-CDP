@@ -25,6 +25,7 @@ class cad_recdes(cad_categ):
         return [row[0] for row in banco.c.fetchall()]
 
     def cadastrar_recdes(self):
+        self.lista_categorias = banco.listar_categorias()
         print("Digite o nome da categoria: ")
         while True:
             self.categoria = str(input())

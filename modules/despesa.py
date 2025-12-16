@@ -65,3 +65,6 @@ class despesa(cad_recdes):
         data_string = self.data.strftime("%d/%m/%Y")
         banco.inserir_dado(self.nome, self.valor, self.categoria, data_string, self.descricao, self.forma_pagamento)
         print("Despesa cadastrada com sucesso.")
+
+    def ver_despesa(self):
+        self.lista_despesa = cad_recdes.listar_despesas()

@@ -40,6 +40,8 @@ while True:
         print("Selecione o tipo de item que será cadastrado (1 - Despesa, 2 - Receita): ")
         cat = str(input())
         while True:
+            despesa_obj.ver_despesa()
+            receita_obj.ver_receita()
             if cat == "1":
                 print(despesa_obj.lista_despesa)
                 despesa_obj.cadastrar_recdes()

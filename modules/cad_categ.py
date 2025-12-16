@@ -95,8 +95,8 @@ class cad_categ:
             if self.tipo == 1:
                 print("Digite o limite mensal para esta despesa (R$): ")
                 self._limite = self.tentar_valor(input(), "1")
-                while self._limite < 0:
-                    print("O limite não pode ser negativo. Digite novamente: ")
+                while self._limite <= 0:
+                    print("O limite não pode ser negativo ou igual a zero. Digite novamente: ")
                     self._limite = self.tentar_valor(input(), "1")
                     
             print("Digite a descrição opcional da categoria: ")

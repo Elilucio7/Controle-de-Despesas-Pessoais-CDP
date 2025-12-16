@@ -7,22 +7,6 @@ class config:
         self.padrao = {"min_alerta_gasto": 500.0, "meses_comparativo": 3, "meta_economia": 20.0}
         self.dados = self._carregar()
 
-    def _carregar(self):
-        if not os.path.exists(self.db_file):
-            self._salvar(self.padrao)
-            return self.padrao
-        try:
-            with open(self.db_file, 'r') as f:
-                return json.load(f)
-        except (json.JSONDecodeError, IOError):
-            print("Erro ao carregar o arquivo de configuração. Usando valores padrão.")
-            self._salvar(self.padrao)
-            return self.padrao
-
-    def _salvar(self, dados):
-        with open(self.db_file, 'w') as f:
-            json.dump(dados, f, indent=4)
-
     @property
     def min_alerta_gasto(self):
         return self.dados.get("min_alerta_gasto", 500.0)
@@ -52,6 +36,23 @@ class config:
             self._salvar(self.dados)
         else:
             print("A meta deve ser entre 0 e 100%.")
+
+    def _carregar(self):
+        if not os.path.exists(self.db_file):
+            self._salvar(self.padrao)
+            return self.padrao
+        try:
+            with open(self.db_file, 'r') as f:
+                return json.load(f)
+        except (json.JSONDecodeError, IOError):
+            print("Erro ao carregar o arquivo de configuração. Usando valores padrão.")
+            self._salvar(self.padrao)
+            return self.padrao
+
+    def _salvar(self, dados):
+        with open(self.db_file, 'w') as f:
+            json.dump(dados, f, indent=4)
+
 
     def menu_configuracao(self):
         while True:

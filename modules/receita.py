@@ -8,6 +8,7 @@ class receita(cad_recdes):
     lista_receita = cad_recdes.listar_receitas()
     def __init__(self, nome = None, valor = None, data = None, limite = None):
         super().__init__(nome, tipo = 2, valor = valor, data = data, limite=limite)
+        self.forma_pagamento = None
 
     def _coletar_data(self):
         while True:
@@ -17,22 +18,6 @@ class receita(cad_recdes):
                 return data.strftime("%d/%m/%Y")
             except ValueError:
                 print("Data inválida! Digite novamente (DD/MM/AAAA): ")
-
-    def _coletar_forma_pagamento(self):
-        formas = ["Dinheiro", "Debito", "Credito", "PIX", "Outro"]
-        print("Selecione a forma de pagamento: ")
-        for i, f in enumerate(formas):
-            print(f"[{i+1}] {f}")
-        
-        while True:
-            try:
-                escolha = int(input("Selecione o número: "))
-                if 1 <= escolha <= len(formas):
-                    return formas[escolha-1]
-                else:
-                    print("Escolha inválida.")
-            except ValueError:
-                print("Entrada inválida. Digite um número.")
 
     def cad_rec(self):
         print("Digite o nome da receita (Título resumido): ")
@@ -64,7 +49,9 @@ class receita(cad_recdes):
                 print("Data inválida! Digite novamente (DD/MM/AAAA): ")
         print("Digite a descrição detalhada da receita: ")
         self.descricao = str(input())
-        self.forma_pagamento = self._coletar_forma_pagamento()
         data_string = self.data.strftime("%d/%m/%Y")
         banco.inserir_dado(self.nome, self.valor, self.categoria, data_string, self.descricao, self.forma_pagamento)
         print("Receita cadastrada com sucesso.")
+
+    def ver_receita(self):
+        self.lista_receita = cad_recdes.listar_receitas()
