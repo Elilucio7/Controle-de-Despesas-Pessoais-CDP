@@ -12,23 +12,20 @@ class cad_recdes(cad_categ):
         self._nome = nome
         self.valor = valor
         self.data = data
-        self.limite = cad_categ.limite_usado
+        self.limite = limite
+        self.descricao = None
+        self.forma_pagamento = None
 
-    def listar_despesas(tipo = "1"):
-        banco.c.execute("SELECT categoria FROM categorias WHERE tipo=?", (tipo))
-        return [row for row in banco.c.fetchall()]
+    def listar_despesas(tipo = 1):
+        banco.c.execute("SELECT categoria FROM categorias WHERE tipo=?", (tipo,))
+        return [row[0] for row in banco.c.fetchall()]
 
-    def listar_receitas(tipo = "2"):
-        banco.c.execute("SELECT categoria FROM categorias WHERE tipo=?", (tipo))
-        return [row for row in banco.c.fetchall()]
-
-    def __str__(self):
-        return f"Nome: {self._nome}, Tipo: {'receita' if self.tipo == 2 else 'despesa'}, Valor: {self.valor}, Data: {self.data}, Categoria: {self.get_categ}, Limite: {self.limite}"
-    
-    def __contains__(self):
-        return self.nome in self.lista_categorias
+    def listar_receitas(tipo = 2):
+        banco.c.execute("SELECT categoria FROM categorias WHERE tipo=?", (tipo,))
+        return [row[0] for row in banco.c.fetchall()]
 
     def cadastrar_recdes(self):
+        print("Digite o nome da categoria: ")
         while True:
             self.categoria = str(input())
             if self.categoria in self.lista_categorias:
@@ -45,12 +42,10 @@ class cad_recdes(cad_categ):
         dados = banco.buscar_dados(x)
         if dados:
             tipo_nome = 'Despesa' if self.tipo == 1 else 'Receita' 
-            print(f"\n--- Dados de {tipo_nome} para a Categoria: {self.categoria} ---")
-            
-            for nome, valor, data in dados:
-                print(f"  {nome} (Data: {data}): R${valor:.2f}") 
+            print(f"\n--- Dados de {tipo_nome}s em '{x}' ---")
+            for nome, valor, data, descricao, forma_pagamento in dados:
+                print(f"Nome: {nome} | Valor: R${valor:.2f} | Data: {data} | Desc: {descricao} | Pagamento: {forma_pagamento}")
         else:
-            print(f"Nenhum dado encontrado para a categoria {self.categoria}.")
+            print(f"Nenhum dado encontrado para a categoria '{x}'.")
 
-
-
+            
